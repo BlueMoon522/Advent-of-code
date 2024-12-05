@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"os"
 	"strings"
+  "strconv"
 )
 
-func sortArrayAsc( unSorted[]int) []int {
+func sortArrayAsc( unSorted[]string) []string{
 
   //unoptimal ,try using map or somethingelse
   for i:= 0 ; i < len(unSorted) ;i++{
@@ -25,7 +26,7 @@ if(unSorted[i]< unSorted[j]){
   }
  //test function
 
-func sortArrayDes( ascend[]int) []int {
+func sortArrayDes( ascend[]string) []string{
   //unoptimal ,try using map or somethingelse
   for i:= 0 ; i < len(ascend) ;i++{
   for j:= 0 ; j < len(ascend) ;j++{
@@ -40,6 +41,47 @@ if(ascend[i]> ascend[j]){
   return ascend
   }
 
+//function to substract same index numbers and return a new array of differences
+func subsameindex(first[]string,second[]string)[]string{
+
+  final:= []string{}
+
+  for i:=0 ; i<len(first);i++{
+    firstNum, err1 := strconv.Atoi(first[i])//converting the string to int,using strconv 
+    secondNum, err2 := strconv.Atoi(second[i])//strconv take two argument
+
+    if err1 != nil || err2 != nil{
+      fmt.Println("Couldnot convert to int")
+      return final
+    }
+    result:= firstNum-secondNum
+    if result <0{
+      result = result * -1
+    }
+    final = append(final, strconv.Itoa(result))
+  }
+
+  return final
+}
+
+
+// function to sum an array
+func addInArray(array[]string) int {
+  var Sum int
+
+    //converting string to integers by iterating over it
+  for _,str:=range array{
+    num,err := strconv.Atoi(str) //converting each number(String) to int,before addition 
+    if err != nil{
+      fmt.Println(err)
+    }
+    Sum = Sum + num
+  }
+
+  return Sum 
+}
+
+//main function to execute
 
 func main()  {
   	// Open the file
@@ -71,14 +113,13 @@ func main()  {
 		return
 	}
  
-  number:= []int{
-32, 5, 48, 20, 14, 2, 35, 47, 11, 29, 18, 50, 37, 6, 9, 45, 25, 4, 22, 41, 12, 30, 46, 1, 17, 40, 21, 34, 3, 7, 8, 33, 38, 36, 16, 10, 19, 24, 27, 15, 13, 42, 26, 28, 43, 39, 23, 31, 49, 44}
-  num2:= []int{
-32, 5, 48, 20, 14, 2, 35, 47, 11, 29, 18, 50, 37, 6, 9, 45, 25, 4, 22, 41, 12, 30, 46, 1, 17, 40, 21, 34, 3, 7, 8, 33, 38, 36, 16, 10, 19, 24, 27, 15, 13, 42, 26, 28, 43, 39, 23, 31, 49, 44}
-  sortedFirst := sortArrayDes(number)
-  sortedSecond := sortArrayAsc(num2)
-  fmt.Println("Descending:",sortedFirst) 
-  fmt.Println("Asecending:",sortedSecond)
+  sortedFirst := sortArrayAsc(firstColumn)
+  sortedSecond := sortArrayAsc(secondColumn)
+
+  diff := subsameindex(sortedFirst,sortedSecond)
+  finalOutput := addInArray(diff)
+  fmt.Println(finalOutput)
+
 	// Print results
 	// fmt.Println("First Column:", firstColumn)
 	// fmt.Println("Second Column:", secondColumn)
