@@ -1,0 +1,1 @@
+C:\Users\Acer\Desktop\Active\ Repositories\AdventofCode\2015\Rust\target\debug\AOC.exe: C:\Users\Acer\Desktop\Active\ Repositories\AdventofCode\2015\Rust\src\day_one\day1.rs C:\Users\Acer\Desktop\Active\ Repositories\AdventofCode\2015\Rust\src\main.rs
