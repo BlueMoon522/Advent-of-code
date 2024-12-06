@@ -26,7 +26,6 @@ func sortArrayAsc(unSorted []string) []string {
 	return unSorted
 }
 
-//test function
 
 func sortArrayDes(ascend []string) []string {
 	//unoptimal ,try using map or somethingelse
