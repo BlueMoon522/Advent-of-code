@@ -19,15 +19,15 @@ pub fn floor() {
     println!("length:{}", characters.len());
 
     let mut current_floor = 0;
-    //To get the final Floor
-    // for (index, value) in characters.iter().enumerate() {
+    // To get the final Floor
+    // for (_, value) in characters.iter().enumerate() {
     //     if *value == '(' {
     //         current_floor = current_floor + 1;
     //     } else if *value == ')' {
     //         current_floor = current_floor - 1;
     //     }
     // }
-    // println!("Current floor:{}", current_floor)
+    // println!("Current floor:{}", current_floor);
     // ******************************************************
     // To get the first time taken to basement i.e -1 case
     for (index, value) in characters.iter().enumerate() {
