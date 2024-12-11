@@ -1,44 +1,47 @@
 use std::{fs::File, io::Read};
+fn err_corrector(line: Vec<i32>) -> bool {
+    let mut change_counter = line.len();
+    let mut second_change_counter = line.len();
+    let mut checker = vec![0; line.len()];
+    checker.clone_from(&line);
+    // println!("Actual  checker{:?}", checker);
+    let loop_length = checker.len() - 1;
+    // println!("loop lenght{}", loop_length);
+    let mut changed_checker = vec![0; checker.len()];
 
-//to check both of this function are very similar except for the line where u reverse the
-//things,may be that can be changed.
+    if condition_checker(line.to_vec())
+        && (ascending_check(line.to_vec()) || descending_check(line.to_vec()))
+    {
+        return true;
+    }
+
+    for i in 0..loop_length {
+        // println!("Current i{}", i);
+        checker.remove(i);
+        // println!("checker now:{:?}", checker);
+        // println!("checker length now:{:?}", checker.len());
+        changed_checker.clone_from(&checker);
+        // println!("Changed checker{:?}", changed_checker);
+        checker.clone_from(&line);
+        if descending_check(changed_checker.to_vec()) {
+            change_counter = change_counter - 1;
+        }
+        if ascending_check(changed_checker.to_vec()) {
+            second_change_counter = second_change_counter - 1;
+        }
+    }
+    if change_counter <= 1 || second_change_counter <= 1 {
+        println!("Flase ones{:?}", line);
+        return false;
+    } else {
+        return true;
+    }
+}
+
 fn ascending_check(mut line: Vec<i32>) -> bool {
-    // let mut del_counter = 0;
-    let mut error_tol = 0;
     let mut copy_line = vec![0; line.len()];
     copy_line.clone_from(&line);
-    for i in 0..line.len() {
-        let mut rem_next_2check = vec![0; line.len()];
-        rem_next_2check.clone_from(&line);
-        // println!("Current remnext :{:?}", rem_next_2check);
-        rem_next_2check.remove(i);
-        if rem_next_2check.windows(2).all(|w| w[0] < w[1]) {
-            return true; // If the remaining vector is strictly ascending, return true
-        }
-        return false;
-        // println!("Current remnext after remove :{:?}", rem_next_2check);
-        // let mut sort_check = vec![0; rem_next_2check.len()];
-        // sort_check.clone_from(&rem_next_2check);
-        // println!("Current sort_check :{:?}", sort_check);
-
-        // println!("Current ascend remnext :{:?}", rem_next_2check);
-        // rem_next_2check.sort();
-        // println!("Current  sorted rem_next_2check :{:?}", rem_next_2check);
-        // if rem_next_2check != sort_check {
-        //     del_counter = del_counter + 1;
-        //     println!("Added to asc del_counter{}", del_counter);
-        // }
-        // if del_counter > 1 {
-        //     println!("in ascending");
-        //     // println!("Current ascendremnext :{:?}", rem_next_2check);
-        //     // println!("Current ascendremnext after remove :{:?}", rem_next_2check);
-        //     // println!("Current ascendsort_check :{:?}", sort_check);
-        //     // println!("returned false");
-        //     return false;
-        // }
-    }
     line.sort();
-
     if line == copy_line {
         for i in 0..line.len() {
             if i != line.len() - 1 {
@@ -49,92 +52,48 @@ fn ascending_check(mut line: Vec<i32>) -> bool {
 
                 // println!("current_diff:{}", current_diff);
                 if line[i] == line[i + 1] {
-                    error_tol = error_tol + 1;
-
-                    // return false;
+                    return false;
                 }
                 if current_diff < 1 || current_diff > 3 {
-                    error_tol = error_tol + 1;
-                    // return false;
+                    return false;
                 }
             }
         }
         // println!("Original line{:?}", copy_line);
         // println!("{:?}", line);
-        if error_tol > 1 {
-            return false;
-        } else {
-            return true;
-        }
+        return true;
     } else {
         return false;
     }
 }
+fn condition_checker(line: Vec<i32>) -> bool {
+    for i in 0..line.len() {
+        if i != line.len() - 1 {
+            let mut current_diff = line[i] - line[i + 1];
+            if current_diff < 0 {
+                current_diff = current_diff * -1;
+            }
+
+            // println!("current_diff:{}", current_diff);
+            if line[i] == line[i + 1] {
+                return false;
+            }
+            if current_diff < 1 || current_diff > 3 {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 fn descending_check(mut line: Vec<i32>) -> bool {
-    // let mut del_counter = 0;
-    let mut error_tol = 0;
     let mut copy_line = vec![0; line.len()];
     copy_line.clone_from(&line);
-    for i in 0..line.len() {
-        let mut rem_next_2check = vec![0; line.len()];
-        rem_next_2check.clone_from(&line);
-        // println!("Current remnext :{:?}", rem_next_2check);
-        rem_next_2check.remove(i);
-        if rem_next_2check.windows(2).all(|w| w[0] > w[1]) {
-            return true; // If the remaining vector is strictly ascending, return true
-        }
-        return false;
-        // println!("Current remnext after remove :{:?}", rem_next_2check);
-        // let mut sort_check = vec![0; rem_next_2check.len()];
-        // sort_check.clone_from(&rem_next_2check);
-        // // println!("Current sort_check :{:?}", sort_check);
-        //
-        // println!("Current descremnext :{:?}", rem_next_2check);
-        // rem_next_2check.sort();
-        // rem_next_2check.reverse();
-        // // println!("Current  sorted rem_next_2check :{:?}", rem_next_2check);
-        // if rem_next_2check != sort_check {
-        //     del_counter = del_counter + 1;
-        //     println!("Added to  desc delcounter{}", del_counter);
-        // }
-        // if del_counter > 1 {
-        //     println!("in descending");
-        //     // println!("Current descremnext :{:?}", rem_next_2check);
-        //     // println!("Current descremnext after remove :{:?}", rem_next_2check);
-        //     // println!("Current descsort_check :{:?}", sort_check);
-        //     // println!("returned false");
-        //     return false;
-        // }
-    }
     line.sort(); //sorting to Ascending
     line.reverse(); //reversing the ascending order
     if line == copy_line {
-        for i in 0..line.len() {
-            if i != line.len() - 1 {
-                let mut current_diff = line[i] - line[i + 1];
-                if current_diff < 0 {
-                    current_diff = current_diff * -1;
-                }
-
-                // println!("current_diff:{}", current_diff);
-                if line[i] == line[i + 1] {
-                    error_tol = error_tol + 1;
-                    // return false;
-                }
-                if current_diff < 1 || current_diff > 3 {
-                    error_tol = error_tol + 1;
-                    // return false;
-                }
-            }
-        }
-        if error_tol > 1 {
-            return false;
-        } else {
-            return true;
-        }
         // println!("Original line{:?}", copy_line);
         // println!("{:?}", line);
-        // return true;
+        return true;
     } else {
         return false;
     }
@@ -142,7 +101,7 @@ fn descending_check(mut line: Vec<i32>) -> bool {
 
 fn main() {
     //storing all the contents of the input.txt in file
-    let mut file = File::open("input.txt").expect("Cant open file");
+    let mut file = File::open("biginput.txt").expect("Cant open file");
     //creating a string to store file content
     let mut contents = String::new();
     //reading file as string and inserting it to contents
@@ -159,19 +118,27 @@ fn main() {
     // println!("{:?}", data); //for all the current data inside this vector
 
     let mut current_check = 0;
-    // let mut false_check = 0;
     for value in &data {
-        if ascending_check(value.to_vec()) == true || descending_check(value.to_vec()) == true {
-            current_check = current_check + 1
+        if err_corrector(value.to_vec()) == true {
+            if condition_checker(value.to_vec()) {
+                current_check = current_check + 1;
+            }
         }
-        // if ascending_check(value.to_vec()) == false && descending_check(value.to_vec()) == false {
-        //     false_check = false_check + 1
-        // }
         // println!("Ascending{}", ascending_check(value.to_vec()));
+        if descending_check(value.to_vec()) == true || ascending_check(value.to_vec()) == true {
+            if condition_checker(value.to_vec()) {
+                current_check = current_check + 1;
+            }
+            // continue;
+        } // Count the number of safe reports.
 
         // println!("{:?}", value);
     }
-    println!("contents length{:?}", data.len());
-    println!("Current safe:{}", current_check);
-    // println!("Current unsafe:{}", false_check);
+    let safe_count = data
+        .iter()
+        .filter(|line| err_corrector(line.to_vec().clone()))
+        .count();
+
+    println!("Number of safe reports: {}", safe_count);
+    println!("Current Check:{}", current_check);
 }
