@@ -1,13 +1,12 @@
 use std::{fs::File, io::Read};
 fn err_corrector(line: Vec<i32>) -> bool {
-    let mut change_counter = line.len();
-    let mut second_change_counter = line.len();
+    // let mut change_counter = line.len();
+    // let mut second_change_counter = line.len();
     let mut checker = vec![0; line.len()];
     checker.clone_from(&line);
     // println!("Actual  checker{:?}", checker);
-    let loop_length = checker.len() - 1;
+    // let loop_length = checker.len() - 1;
     // println!("loop lenght{}", loop_length);
-    let mut changed_checker = vec![0; checker.len()];
 
     if condition_checker(line.to_vec())
         && (ascending_check(line.to_vec()) || descending_check(line.to_vec()))
@@ -15,27 +14,42 @@ fn err_corrector(line: Vec<i32>) -> bool {
         return true;
     }
 
-    for i in 0..loop_length {
-        // println!("Current i{}", i);
-        checker.remove(i);
-        // println!("checker now:{:?}", checker);
-        // println!("checker length now:{:?}", checker.len());
-        changed_checker.clone_from(&checker);
-        // println!("Changed checker{:?}", changed_checker);
-        checker.clone_from(&line);
-        if descending_check(changed_checker.to_vec()) {
-            change_counter = change_counter - 1;
-        }
-        if ascending_check(changed_checker.to_vec()) {
-            second_change_counter = second_change_counter - 1;
+    // Try removing each element to see if the line becomes valid.
+    for i in 0..line.len() {
+        let mut modified_line = line.to_vec();
+        modified_line.remove(i);
+
+        if ascending_check(modified_line.to_vec())
+            || descending_check(modified_line.to_vec()) && condition_checker(modified_line.to_vec())
+        {
+            return true;
         }
     }
-    if change_counter <= 1 || second_change_counter <= 1 {
-        println!("Flase ones{:?}", line);
-        return false;
-    } else {
-        return true;
-    }
+
+    false
+
+    // for i in 0..loop_length {
+    //     // println!("Current i{}", i);
+    //     checker.remove(i);
+    //     // println!("checker now:{:?}", checker);
+    //     // println!("checker length now:{:?}", checker.len());
+    //     let mut changed_checker = vec![0; checker.len()];
+    //     changed_checker.clone_from(&checker);
+    //     // println!("Changed checker{:?}", changed_checker);
+    //     checker.clone_from(&line);
+    //     if descending_check(changed_checker.to_vec()) {
+    //         change_counter = change_counter - 1;
+    //     }
+    //     if ascending_check(changed_checker.to_vec()) {
+    //         second_change_counter = second_change_counter - 1;
+    //     }
+    // }
+    // if change_counter <= 1 || second_change_counter <= 1 {
+    //     println!("Flase ones{:?}", line);
+    //     return true;
+    // } else {
+    //     return false;
+    // }
 }
 
 fn ascending_check(mut line: Vec<i32>) -> bool {
@@ -117,28 +131,20 @@ fn main() {
         .collect();
     // println!("{:?}", data); //for all the current data inside this vector
 
-    let mut current_check = 0;
-    for value in &data {
-        if err_corrector(value.to_vec()) == true {
-            if condition_checker(value.to_vec()) {
-                current_check = current_check + 1;
-            }
-        }
-        // println!("Ascending{}", ascending_check(value.to_vec()));
-        if descending_check(value.to_vec()) == true || ascending_check(value.to_vec()) == true {
-            if condition_checker(value.to_vec()) {
-                current_check = current_check + 1;
-            }
-            // continue;
-        } // Count the number of safe reports.
-
-        // println!("{:?}", value);
-    }
+    // let mut current_check = 0;
+    // for value in &data {
+    //     if err_corrector(value.to_vec()) == true {
+    //         current_check = current_check + 1;
+    //     }
+    //     // println!("Ascending{}", ascending_check(value.to_vec()));
+    //
+    //     // println!("{:?}", value);
+    // }
     let safe_count = data
         .iter()
         .filter(|line| err_corrector(line.to_vec().clone()))
         .count();
 
     println!("Number of safe reports: {}", safe_count);
-    println!("Current Check:{}", current_check);
+    // println!("Current Check:{}", current_check);
 }
