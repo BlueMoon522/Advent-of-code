@@ -7,7 +7,6 @@ fn err_corrector(line: Vec<i32>) -> bool {
     // println!("Actual  checker{:?}", checker);
     // let loop_length = checker.len() - 1;
     // println!("loop lenght{}", loop_length);
-
     if condition_checker(line.to_vec())
         && (ascending_check(line.to_vec()) || descending_check(line.to_vec()))
     {
